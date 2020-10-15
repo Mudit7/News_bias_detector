@@ -62,16 +62,24 @@ if __name__ == '__main__':
 
     if not load_saved:
         word2vec = Word2Vec.load('gensim_w2v.emb')
-        x_train,y_train = dataloader(word2vec.wv,max_len=max_seq_len,tosave=True)
+        X,Y = dataloader(word2vec.wv,max_len=max_seq_len,tosave=True)
     else:
         data = np.load('processed_data.npz',allow_pickle=True)
-        x_train = data['arr_0']
-        y_train = data['arr_1']
-    print('input shapes = ',x_train.shape,y_train.shape)
-    print(x_train[0])
+        X = data['arr_0']
+        Y = data['arr_1']
+    print(f"emb shape = {X.shape}, \nlabel_shape = {Y.shape}")
+    # total_size = X.shape[0]
+    # train,test = (0.7,0.3)*total_size
+    #
+    # x_train = X[0:train]
+    # y_train = Y[0:train]
+    #
+    # x_test = X[train:total_size]
+    # y_test = X[train:total_size]
+
     model = BiLSTM_Attention(embedding_dim=emb_dim, units=latent_dim, nClasses=no_classes)
     model.compile(optimizer='adam',
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
-    model.fit(x_train,y_train,epochs=20,verbose=2,batch_size=30)
-    print(model.predict(x_train[0:20]),y_train[0:20])
+    model.fit(X,Y,epochs=20,verbose=2,batch_size=30,validation_split=0.3)
+    # print(model.predict(x_train[0:20]),y_train[0:20])
