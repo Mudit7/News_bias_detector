@@ -56,7 +56,7 @@ if __name__ == '__main__':
     max_seq_len = 150
     pad_id = 0
     emb_dim = 100
-    latent_dim = 100
+    latent_dim = 90
     no_classes = 2
     load_saved = True
 
@@ -68,10 +68,10 @@ if __name__ == '__main__':
         x_train = data['arr_0']
         y_train = data['arr_1']
     print('input shapes = ',x_train.shape,y_train.shape)
-    # exit(2)
+    print(x_train[0])
     model = BiLSTM_Attention(embedding_dim=emb_dim, units=latent_dim, nClasses=no_classes)
-    model.compile(optimizer=tf.optimizers.Adam(),
+    model.compile(optimizer='adam',
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
-    model.fit(x_train,y_train,epochs=1,verbose=2,batch_size=8)
+    model.fit(x_train,y_train,epochs=20,verbose=2,batch_size=30)
     print(model.predict(x_train[0:20]),y_train[0:20])

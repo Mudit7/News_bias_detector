@@ -15,6 +15,5 @@ class BiLSTM_Attention(tf.keras.Model):
         x = tf.convert_to_tensor(x)
         final_output, state_h = self.encoder(x)
         context_vector, attention_weights = self.attention(final_output, state_h)
-        print('atten',context_vector,attention_weights)
         x = self.decoder(context_vector)
         return x

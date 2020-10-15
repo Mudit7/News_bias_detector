@@ -10,7 +10,7 @@ class Encoder(tf.keras.Model):
                                       dropout=0.3,
                                       return_sequences=True,
                                       return_state=True,
-                                      recurrent_activation='relu',
+                                      recurrent_activation='tanh',
                                       recurrent_initializer='glorot_uniform'),merge_mode='concat', name="bi_lstm_0")
 
 
