@@ -1,0 +1,2 @@
+model_checkpoint_path: "lstm_with_attention"
+all_model_checkpoint_paths: "lstm_with_attention"

@@ -1,5 +1,5 @@
 import tensorflow as tf
-from bilsm_attention.Attention import BahdanauAttention
+from bilstm.bilsm_attention.Attention import BahdanauAttention
 
 class Decoder(tf.keras.Model):
   def __init__(self,nclasses):

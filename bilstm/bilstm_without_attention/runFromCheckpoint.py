@@ -1,11 +1,12 @@
 import tensorflow as tf
-from bilsm_attention.model import BiLSTM_Attention
+from bilstm.bilstm_without_attention.model import BiLSTM_without_Attention
 from keras_preprocessing import sequence
 import numpy as np
 from gensim.models import Word2Vec
 import pandas as pd
 import gensim.downloader as api
 from tensorflow.keras.preprocessing.text import text_to_word_sequence
+
 
 # model = tf.keras.Sequential([
 #     tf.keras.layers.Embedding(vocab_size, 64),
@@ -15,7 +16,7 @@ from tensorflow.keras.preprocessing.text import text_to_word_sequence
 #     tf.keras.layers.Dense(1)
 # ])
 
-def dataloader(w2v,max_len,tosave=False):
+def dataloader(w2v, max_len, tosave=False):
     def preprocess(text):
         embeddings = []
         words = text_to_word_sequence(text)
@@ -27,7 +28,7 @@ def dataloader(w2v,max_len,tosave=False):
         if cur_seq_len < max_len:
             embeddings = np.pad(embeddings, [(0, max_len - cur_seq_len), (0, 0)])
         else:
-            embeddings = embeddings[cur_seq_len - max_len :]
+            embeddings = embeddings[cur_seq_len - max_len:]
 
         return embeddings
 
@@ -37,7 +38,7 @@ def dataloader(w2v,max_len,tosave=False):
     y_train = []
     for ind in df.index:
         x_train.append(preprocess(df['texts'][ind]))
-        labels = (0,1) if df['labels'][ind] else (1,0)
+        labels = (0, 1) if df['labels'][ind] else (1, 0)
         y_train.append(labels)
 
     x_train = np.asarray(x_train)
@@ -46,7 +47,8 @@ def dataloader(w2v,max_len,tosave=False):
         np.savez('processed_data.npz', x_train, y_train)
         print('saved.')
     print('loaded.')
-    return x_train,y_train
+    return x_train, y_train
+
 
 if __name__ == '__main__':
     # preprocessing
@@ -62,9 +64,9 @@ if __name__ == '__main__':
 
     if not load_saved:
         word2vec = Word2Vec.load('gensim_w2v.emb')
-        X,Y = dataloader(word2vec.wv,max_len=max_seq_len,tosave=True)
+        X, Y = dataloader(word2vec.wv, max_len=max_seq_len, tosave=True)
     else:
-        data = np.load('processed_data.npz',allow_pickle=True)
+        data = np.load('../bilsm_attention/processed_data.npz', allow_pickle=True)
         X = data['arr_0']
         Y = data['arr_1']
     print(f"emb shape = {X.shape}, \nlabel_shape = {Y.shape}")
@@ -77,9 +79,9 @@ if __name__ == '__main__':
     # x_test = X[train:total_size]
     # y_test = X[train:total_size]
 
-    model = BiLSTM_Attention(embedding_dim=emb_dim, units=latent_dim, nClasses=no_classes)
+    model = BiLSTM_without_Attention(embedding_dim=emb_dim, units=latent_dim, nClasses=no_classes)
     model.compile(optimizer='adam',
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
-    model.fit(X,Y,epochs=20,verbose=2,batch_size=30,validation_split=0.3)
-    # print(model.predict(x_train[0:20]),y_train[0:20])
+
+    model.load_weights('../../Checkpoints/bilstm_without_attention/lstm_without_attention')

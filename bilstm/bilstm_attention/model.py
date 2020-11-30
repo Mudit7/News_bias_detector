@@ -1,7 +1,7 @@
 import tensorflow as tf
-from bilsm_attention.Encoder import  Encoder
-from bilsm_attention.Attention import BahdanauAttention
-from bilsm_attention.Decoder import Decoder
+from bilstm.bilsm_attention.Encoder import  Encoder
+from bilstm.bilsm_attention.Attention import BahdanauAttention
+from bilstm.bilsm_attention.Decoder import Decoder
 import numpy as np
 
 class BiLSTM_Attention(tf.keras.Model):
